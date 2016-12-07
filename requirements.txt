@@ -1,3 +1,4 @@
 colorama==0.3.7
 python-chess==0.15.4
 requests==2.10.0
+pymongo==3.4.0

@@ -1,8 +1,8 @@
-# Python-Puzzle-Creator
+# Variant-Puzzle-Creator
 
 ## About
 
-This is a python application dedicated to creating chess puzzles for lichess.org. However it can easily be adapted to create puzzles from personal games.
+This is a python application dedicated to creating chess puzzles for Chess Variants Training. It is a modification of clarkerubber's puzzle generator.
 
 ## Installation
 

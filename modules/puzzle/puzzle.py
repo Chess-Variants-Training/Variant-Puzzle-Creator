@@ -5,20 +5,20 @@ import logging
 import os
 
 class puzzle:
-    def __init__(self, last_pos, last_move, game_id, engine, info_handler):
+    def __init__(self, last_pos, last_move, variant, engine, info_handler):
         self.last_pos = last_pos.copy()
         self.last_move = last_move
-        self.game_id = game_id
+        self.variant = variant
         last_pos.push(last_move)
-        self.positions = position_list(last_pos, engine, info_handler)
+        self.positions = position_list(last_pos, engine, info_handler, variant)
 
     def to_dict(self):
         return {
-            'game_id': self.game_id,
+            'variant': self.variant,
             'category': self.positions.category(),
             'last_pos': self.last_pos.fen(),
             'last_move': self.last_move.uci(),
-            'move_list': self.positions.move_list()
+            'move_list': " ".join(self.positions.move_list())
             }
 
     def color(self):

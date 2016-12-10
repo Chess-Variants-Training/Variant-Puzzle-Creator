@@ -4,13 +4,15 @@ import logging
 import os
 from modules.bcolors.bcolors import bcolors
 from modules.puzzle.analysed import analysed
+from modules.material.material import piece_values
 from operator import methodcaller
 
 class position_list:
-    def __init__(self, position, engine, info_handler, player_turn=True, best_move=None, evaluation=None):
+    def __init__(self, position, engine, info_handler, variant, player_turn=True, best_move=None, evaluation=None):
         self.position = position.copy()
         self.engine = engine
         self.info_handler = info_handler
+        self.variant = variant
         self.player_turn = player_turn
         self.best_move = best_move
         self.evaluation = evaluation
@@ -62,6 +64,7 @@ class position_list:
             self.next_position = position_list(self.position.copy(),
                 self.engine,
                 self.info_handler,
+                self.variant,
                 not self.player_turn)
             self.next_position.position.push(self.best_move.bestmove)
             logging.debug("Best Move: " + self.best_move.bestmove.uci() + bcolors.ENDC)
@@ -88,12 +91,15 @@ class position_list:
         logging.debug("... and " + str(max(0, len(self.analysed_legals) - 3)) + " more moves" + bcolors.ENDC)
 
     def material_difference(self):
-        return sum(v * (len(self.position.pieces(pt, True)) - len(self.position.pieces(pt, False))) for v, pt in zip([0,3,3,5.5,9], chess.PIECE_TYPES))
+        return sum(v * (len(self.position.pieces(pt, True)) - len(self.position.pieces(pt, False))) for v, pt in zip(piece_values(self.variant), chess.PIECE_TYPES))
 
     def material_count(self):
         return chess.pop_count(self.position.occupied)
 
     def is_complete(self, category, color, first_node, first_val):
+        if self.variant == 'Antichess' and category == 'Material':
+            return False
+
         if self.next_position is not None:
             if ((category == 'Mate' and not self.ambiguous())
                 or (category == 'Material' and self.next_position.next_position is not None)):
